@@ -80,4 +80,23 @@ export const routes: Route[] = [
       return res.writeHead(204).end()
     },
   },
+  {
+    method: 'DELETE',
+    path: buildRoutePath('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params as { id: string }
+
+      if (id === undefined) {
+        return res.writeHead(400).end()
+      }
+
+      try {
+        database.delete('task', id)
+      } catch {
+        return res.writeHead(400).end()
+      }
+
+      return res.writeHead(204).end()
+    },
+  },
 ]

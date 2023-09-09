@@ -23,7 +23,6 @@ export const routes: Route[] = [
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const { search } = req.query as { search: string }
-      console.log('routes > get > query > search', search)
 
       const searchQuery = search
         ? {
@@ -104,6 +103,25 @@ export const routes: Route[] = [
         database.delete('task', id)
       } catch {
         return res.writeHead(400).end()
+      }
+
+      return res.writeHead(204).end()
+    },
+  },
+  {
+    method: 'PATCH',
+    path: buildRoutePath('/tasks/:id/complete'),
+    handler: (req, res) => {
+      const { id } = req.params as { id: string }
+      try {
+        database.toggle('task', id)
+      } catch {
+        return res.writeHead(400).end(
+          JSON.stringify({
+            code: 'register_not_found',
+            message: 'Register not found',
+          }),
+        )
       }
 
       return res.writeHead(204).end()

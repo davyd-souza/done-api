@@ -92,4 +92,21 @@ export class Database {
       throw new Error()
     }
   }
+
+  toggle(table: TableKeys, id: string) {
+    const rowIndex = this.#database[table].findIndex((row) => row.id === id)
+
+    if (rowIndex > -1) {
+      const { completed_at: completedAt } = this.#database[table][rowIndex]
+      if (completedAt) {
+        this.#database[table][rowIndex].completed_at = null
+      } else {
+        this.#database[table][rowIndex].completed_at = new Date().toString()
+      }
+
+      this.#persist()
+    } else {
+      throw new Error('Register not found.')
+    }
+  }
 }

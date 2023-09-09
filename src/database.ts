@@ -46,6 +46,8 @@ export class Database {
     } else {
       this.#database[table] = [data]
     }
+
+    this.#persist()
   }
 
   update(table: TableKeys, id: string, data: Omit<Task, 'id'>) {

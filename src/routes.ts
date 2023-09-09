@@ -1,4 +1,5 @@
-import { Database } from './database.js'
+import { randomUUID } from 'crypto'
+import { Database, type Task } from './database.js'
 
 import type { RequestData } from './server'
 import type { IncomingMessage, ServerResponse } from 'http'
@@ -22,6 +23,31 @@ export const routes: Route[] = [
       const tasks = database.select('task')
 
       return res.end(JSON.stringify(tasks))
+    },
+  },
+  {
+    method: 'POST',
+    path: '/tasks',
+    handler: (req, res) => {
+      const { title, description } =
+        (req.body as { title: string; description: string }) ?? {}
+
+      if (req.body === null || !title || !description) {
+        return res.writeHead(400).end()
+      }
+
+      const task: Task = {
+        id: randomUUID(),
+        title,
+        description,
+        created_at: new Date().toString(),
+        updated_at: new Date().toString(),
+        completed_at: null,
+      }
+
+      database.insert('task', task)
+
+      return res.writeHead(201).end()
     },
   },
 ]

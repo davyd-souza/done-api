@@ -5,6 +5,7 @@ import { json } from './middleware/json'
 
 export type RequestData = IncomingMessage & {
   body?: { [key: string]: string | number | boolean } | null
+  params?: { [key: string]: string | number | boolean }
 }
 
 const server = http.createServer(async (req: RequestData, res) => {
@@ -13,10 +14,14 @@ const server = http.createServer(async (req: RequestData, res) => {
   await json(req, res)
 
   const route = routes.find(
-    (route) => route.method === method && route.path === url,
+    (route) => route.method === method && url && route.path.test(url),
   )
 
   if (route) {
+    const routeParams = req.url?.match(route.path)
+
+    req.params = routeParams?.groups
+
     return route.handler(req, res)
   }
 

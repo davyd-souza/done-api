@@ -50,12 +50,26 @@ export class Database {
     this.#persist()
   }
 
-  update(table: TableKeys, id: string, data: Omit<Task, 'id'>) {
+  update(
+    table: TableKeys,
+    id: string,
+    data: Omit<Task, 'id' | 'created_at' | 'completed_at'>,
+  ) {
     const rowIndex = this.#database[table].findIndex((row) => row.id === id)
 
     if (rowIndex > -1) {
-      this.#database[table][rowIndex] = { id, ...data }
+      const { created_at: createdAt, completed_at: completedAt } =
+        this.#database[table][rowIndex]
+
+      this.#database[table][rowIndex] = {
+        id,
+        created_at: createdAt,
+        completed_at: completedAt,
+        ...data,
+      }
       this.#persist()
+    } else {
+      throw new Error()
     }
   }
 

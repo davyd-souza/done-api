@@ -5,7 +5,7 @@ const databasePath = new URL('../db.json', import.meta.url)
 export type Task = {
   id: string
   title: string
-  description: string | null
+  description: string
   completed_at: string | null
   created_at: string
   updated_at: string
@@ -34,8 +34,17 @@ export class Database {
     fs.writeFile(databasePath, JSON.stringify(this.#database))
   }
 
-  select(table: TableKeys) {
-    const data = this.#database[table] ?? []
+  select(table: TableKeys, search: Pick<Task, 'title' | 'description'> | null) {
+    let data = this.#database[table] ?? []
+
+    if (search) {
+      data = data.filter((row) =>
+        Object.entries(search).some(([key, value]) =>
+          // @ts-expect-error ts(7053)
+          row[key].toLowerCase().includes(value.toLowerCase()),
+        ),
+      )
+    }
 
     return data
   }

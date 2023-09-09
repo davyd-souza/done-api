@@ -22,7 +22,17 @@ export const routes: Route[] = [
     method: 'GET',
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
-      const tasks = database.select('task')
+      const { search } = req.query as { search: string }
+      console.log('routes > get > query > search', search)
+
+      const searchQuery = search
+        ? {
+            title: search,
+            description: search,
+          }
+        : null
+
+      const tasks = database.select('task', searchQuery)
 
       return res.end(JSON.stringify(tasks))
     },

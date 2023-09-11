@@ -1,5 +1,10 @@
 lockfileVersion: '6.0'
 
+dependencies:
+  csv-parse:
+    specifier: ^5.5.0
+    version: 5.5.0
+
 devDependencies:
   '@rocketseat/eslint-config':
     specifier: ^2.1.0
@@ -836,6 +841,10 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /csv-parse@5.5.0:
+    resolution: {integrity: sha512-RxruSK3M4XgzcD7Trm2wEN+SJ26ChIb903+IWxNOcB5q4jT2Cs+hFr6QP39J05EohshRFEvyzEBoZ/466S2sbw==}
+    dev: false
 
   /damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}

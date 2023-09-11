@@ -2,18 +2,34 @@ import http, { type IncomingMessage } from 'node:http'
 import { routes } from './routes'
 
 import { json } from './middleware/json'
+import { csv } from './middleware/csv'
+
 import { extractQueryParams } from './util/extract-query-params'
 
 export type RequestData = IncomingMessage & {
-  body?: { [key: string]: string | number | boolean } | null
+  body?:
+    | { [key: string]: string | number | boolean }
+    | [key: string, value: string][]
+    | null
   params?: { [key: string]: string }
   query?: { [key: string]: string }
 }
 
 const server = http.createServer(async (req: RequestData, res) => {
-  const { method, url } = req
+  const {
+    method,
+    url,
+    headers: { 'content-type': contentType },
+  } = req
 
-  await json(req, res)
+  switch (contentType?.split(';')[0]) {
+    case 'multipart/form-data':
+      await csv(req, res)
+      break
+    default:
+      await json(req, res)
+      break
+  }
 
   const route = routes.find(
     (route) => route.method === method && url && route.path.test(url),

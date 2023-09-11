@@ -127,4 +127,22 @@ export const routes: Route[] = [
       return res.writeHead(204).end()
     },
   },
+  {
+    method: 'POST',
+    path: buildRoutePath('/tasks/import'),
+    handler: (req, res) => {
+      const tasks = req.body
+
+      if (Array.isArray(tasks)) {
+        for (const [title, description] of tasks) {
+          fetch('http://localhost:3333/tasks', {
+            method: 'POST',
+            body: JSON.stringify({ title, description }),
+          })
+        }
+      }
+
+      return res.writeHead(201).end()
+    },
+  },
 ]
